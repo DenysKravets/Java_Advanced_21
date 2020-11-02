@@ -8,4 +8,6 @@ import ua.lviv.lgs.domain.User;
 @Repository
 public interface UserDao extends CrudRepository<User, Long> {
 
+	public User findByEmail(String email);
+	
 }

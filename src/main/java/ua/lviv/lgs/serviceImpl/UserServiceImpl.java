@@ -22,6 +22,10 @@ public class UserServiceImpl {
 		return userDao.findById(id).get();
 	}
 	
+	public User readByEmail(String email) {
+		return userDao.findByEmail(email);
+	}
+	
 	public void update(User user) {
 		userDao.save(user);
 	}

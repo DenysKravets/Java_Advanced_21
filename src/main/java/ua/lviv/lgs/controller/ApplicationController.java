@@ -5,6 +5,7 @@ import java.sql.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.BeanDefinitionDsl.Role;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,15 +35,50 @@ public class ApplicationController  {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String start(HttpServletRequest request) {
 		
-		User user = new User("denys", "denys@gmail.com", "pass", UserRole.ADMIN);
-		Periodical periodical = new Periodical("product", "tis nothin but a simple product", (long) 270, null);
-		Bucket bucket = new Bucket(user, periodical, null);
+		return "index";
+	}
+	
+	//Login
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login() {
+		
+		return "login";
+	}
+	
+	//Register
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	public String register() {
+		
+		return "register";
+	}
+	
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public String registerPost(HttpServletRequest request) {
+		
+		User user = new User();
+		
+		user.setUsername(request.getParameter("username"));
+		user.setEmail(request.getParameter("email"));
+		user.setPassword(request.getParameter("password"));
+		user.setRole(UserRole.valueOf(request.getParameter("role")));
 		
 		userSerivce.create(user);
-		periodicalSerivce.create(periodical);
-		bucketSerivce.create(bucket);
 		
-		return "index";
+		return "login";
+	}
+	
+	//Administrator
+	@RequestMapping(value = "/admin", method = RequestMethod.GET)
+	public String admin() {
+		
+		return "admin";
+	}
+	
+	//User
+	@RequestMapping(value = "/user", method = RequestMethod.GET)
+	public String user() {
+		
+		return "user";
 	}
 	
 
