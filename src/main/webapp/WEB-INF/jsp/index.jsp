@@ -8,7 +8,7 @@
 </head>
 <body>
 
-ADMIN
+	<jsp:include page="header.jsp"></jsp:include>
 
 </body>
 </html>

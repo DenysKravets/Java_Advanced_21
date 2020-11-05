@@ -37,15 +37,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		http.authorizeRequests()
-			.antMatchers("/admin").hasRole("ADMIN")
-			.antMatchers("/user").hasAnyRole("ADMIN", "USER")
-			.antMatchers("/").permitAll()
+			.antMatchers("/addPeriodical").hasRole("ADMIN")
+			.antMatchers("/showPeriodicals").hasAnyRole("ADMIN", "USER")
+			.antMatchers("/").hasAnyRole("ADMIN", "USER")
 			.antMatchers("/login").permitAll()
 			.antMatchers("/register").permitAll()
 			.and()
 			.formLogin()
 			.loginPage("/login")
-			.defaultSuccessUrl("/user");
+			.defaultSuccessUrl("/");
 		
 	}
 	

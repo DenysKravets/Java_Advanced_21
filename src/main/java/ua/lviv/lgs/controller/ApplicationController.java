@@ -1,20 +1,26 @@
 package ua.lviv.lgs.controller;
 
-import java.sql.Date;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.BeanDefinitionDsl.Role;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
-import ua.lviv.lgs.domain.Bucket;
 import ua.lviv.lgs.domain.Periodical;
 import ua.lviv.lgs.domain.User;
-
 import ua.lviv.lgs.domain.UserRole;
+import ua.lviv.lgs.dto.PeriodicalDto;
 import ua.lviv.lgs.serviceImpl.BucketServiceImpl;
 import ua.lviv.lgs.serviceImpl.PeriodicalServiceImpl;
 import ua.lviv.lgs.serviceImpl.UserServiceImpl;
@@ -81,8 +87,50 @@ public class ApplicationController  {
 		return "user";
 	}
 	
-
+	//Periodical
+	@RequestMapping(value = "/periodical", method = RequestMethod.GET)
+	public String periodical(HttpServletRequest request) {
 		
+		request.setAttribute("periodical", new Periodical());
+		
+		return "addPeriodical";
+	}
+
+	@RequestMapping(value = "/periodical", method = RequestMethod.POST)
+	public ModelAndView periodicalPost(@ModelAttribute("periodical") Periodical periodical, @RequestPart("file") MultipartFile file) throws IOException {
+		
+		periodicalSerivce.create(periodical);
+		
+		return new ModelAndView("redirect:/periodical");
+	}
+	
+	@RequestMapping(value = "/showPeriodicals", method = RequestMethod.GET)
+	public String showPeriodicals(HttpServletRequest request) {
+		
+		Iterator<Periodical> periodicals = periodicalSerivce.readAll().iterator();
+		
+		List<PeriodicalDto> periodicalDtos = new ArrayList<>();
+		
+		while(periodicals.hasNext()) {
+			
+			Periodical periodical = periodicals.next();
+			PeriodicalDto periodicalDto = new PeriodicalDto();
+			
+			periodicalDto.id = periodical.getId();
+			periodicalDto.name = periodical.getName();
+			periodicalDto.description = periodical.getDescription();
+			periodicalDto.price = periodical.getPrice();
+			periodicalDto.photo = Base64.getEncoder().encodeToString(periodical.getPhoto());
+			
+			periodicalDtos.add(periodicalDto);
+		}
+		
+		System.out.println(periodicalDtos);
+		
+		request.setAttribute("periodicals", periodicalDtos);
+		
+		return "showPeriodicals";
+	}
 	
 	
 }

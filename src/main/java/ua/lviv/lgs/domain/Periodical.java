@@ -7,6 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Transient;
+
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 public class Periodical {
@@ -22,9 +25,22 @@ public class Periodical {
 	private Long price;
 	
 	@Lob
-	private byte[] photo;
+	private byte[] photo = null;
+	
+	@Transient
+	private MultipartFile file;
 
 	public Periodical() {}
+	
+	public Periodical(Long id, String name, String description, Long price, byte[] photo, MultipartFile file) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.price = price;
+		this.photo = photo;
+		this.file = file;
+	}
 
 	public Periodical(String name, String description, Long price, byte[] photo) {
 		this.name = name;
@@ -81,10 +97,18 @@ public class Periodical {
 		this.photo = photo;
 	}
 
+	public MultipartFile getFile() {
+		return file;
+	}
+
+	public void setFile(MultipartFile file) {
+		this.file = file;
+	}
+
 	@Override
 	public String toString() {
 		return "Periodical [id=" + id + ", name=" + name + ", description=" + description + ", price=" + price
-				+ ", photo=" + Arrays.toString(photo) + "]";
+				+ "]";
 	}
 	
 }

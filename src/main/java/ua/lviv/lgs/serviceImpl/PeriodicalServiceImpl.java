@@ -1,5 +1,7 @@
 package ua.lviv.lgs.serviceImpl;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +16,17 @@ public class PeriodicalServiceImpl {
 	private PeriodicalDao periodicalDao;
 	
 	@Transactional
-	public void create(Periodical periodical) {
+	public void create(Periodical periodical) throws IOException {
+		
+		if(periodical.getPhoto() == null) {
+			periodical.setPhoto(periodical.getFile().getBytes());
+		}
+		
 		periodicalDao.save(periodical);
+	}
+	
+	public Iterable<Periodical> readAll() {
+		return periodicalDao.findAll();
 	}
 	
 	public Periodical read(Long id) {
