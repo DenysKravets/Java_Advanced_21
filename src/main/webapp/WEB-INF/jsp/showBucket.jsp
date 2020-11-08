@@ -9,7 +9,7 @@
 </head>
 <body>
 
-	<jsp:include page="header.jsp"></jsp:include>
+<jsp:include page="header.jsp"></jsp:include>
 
 	<c:forEach items="${periodicals}" var="periodical">
 		<div class="card" style="width: 400px">
@@ -18,12 +18,12 @@
 				<h4 class="card-title">${periodical.getName()}</h4>
 				<p class="card-text">${periodical.getDescription()}</p>
 				<p class="card-text">${periodical.getPrice()}</p>
-				<button onclick="sendPeriodicalRequest(${periodical.getId()})" class="btn btn-primary">Add to cart</button>
+				<button onclick="sendRemoveRequest(this, ${periodical.getId()})" class="btn btn-primary">Remove</button>
 			</div>
 		</div>
 	</c:forEach>
 
-	<script src="showPeriodicals.js" defer></script>
-	
+	<script src="showBucket.js" defer></script>
+
 </body>
 </html>

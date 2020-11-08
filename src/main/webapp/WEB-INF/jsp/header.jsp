@@ -1,5 +1,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+<script type="text/javascript"
+		src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
   <!-- Brand -->
   <a class="navbar-brand" href="#">Logo</a>
@@ -14,6 +16,9 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" href="${contextPath}/showPeriodicals">Periodicals</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="${contextPath}/showBucket">Bucket</a>
     </li>
 
     <!-- Dropdown -->

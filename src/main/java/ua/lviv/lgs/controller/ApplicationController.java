@@ -1,22 +1,29 @@
 package ua.lviv.lgs.controller;
 
 import java.io.IOException;
+import java.security.Principal;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import ua.lviv.lgs.domain.Bucket;
 import ua.lviv.lgs.domain.Periodical;
 import ua.lviv.lgs.domain.User;
 import ua.lviv.lgs.domain.UserRole;
@@ -125,12 +132,59 @@ public class ApplicationController  {
 			periodicalDtos.add(periodicalDto);
 		}
 		
-		System.out.println(periodicalDtos);
-		
 		request.setAttribute("periodicals", periodicalDtos);
 		
 		return "showPeriodicals";
 	}
 	
+	//Bucket
+	@Transactional(readOnly = true)
+	@RequestMapping(value = "/showBucket", method = RequestMethod.GET)
+	public String showBucket(HttpServletRequest request, Principal principal) {
+		
+		User user = userSerivce.readByEmail(principal.getName());
+		Stream<Bucket> bucketStream = bucketSerivce.readByUser(user);
+		List<PeriodicalDto> periodicalDtos = new ArrayList<>();
+		
+		bucketStream.forEach(bucket -> {
+			Periodical periodical = bucket.getPeriodical();
+			
+			PeriodicalDto periodicalDto = new PeriodicalDto();
+			
+			periodicalDto.id = bucket.getId();
+			periodicalDto.name = periodical.getName();
+			periodicalDto.description = periodical.getDescription();
+			periodicalDto.price = periodical.getPrice();
+			periodicalDto.photo = Base64.getEncoder().encodeToString(periodical.getPhoto());
+			
+			periodicalDtos.add(periodicalDto);
+		});
+		
+		request.setAttribute("periodicals", periodicalDtos);
+		
+		return "showBucket";
+	}
+	
+	@RequestMapping(value = "/addPeriodicalToBucket", method = RequestMethod.GET)
+	public ModelAndView addPeriodicalToBucket(@RequestParam long id, Principal principal) throws IOException {
+		
+		System.out.println(id);
+		
+		User user = userSerivce.readByEmail(principal.getName());
+		Periodical periodical = periodicalSerivce.read(id);
+		Bucket bucket = new Bucket(user, periodical, new Date(System.currentTimeMillis()));
+		bucketSerivce.create(bucket);
+		
+		return new ModelAndView("redirect:/showPeriodicals");
+	}
+	
+	@RequestMapping(value = "/removePeriodicalFromBucket", method = RequestMethod.GET)
+	public ModelAndView removePeriodicalfromBucket(@RequestParam long id) throws IOException {
+		
+		Bucket bucket = bucketSerivce.read(id);
+		bucketSerivce.delete(bucket);
+		
+		return new ModelAndView("redirect:/showPeriodicals");
+	}
 	
 }
